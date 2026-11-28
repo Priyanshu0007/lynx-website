@@ -242,7 +242,7 @@ The initial render takes three steps:
 
 1. **The main thread renders the first frame.** It runs the components and creates a main-thread template instance for each use of a template. The static creator builds the Lynx elements, the dynamic updaters apply the initial dynamic values, and dynamic children are inserted into the slots reserved by the compiler. The first frame can be displayed at this point.
 2. **The main thread describes what it created.** It sends the background thread a description of its template-instance tree: the template, identity, and dynamic values of each instance. The Lynx elements themselves stay on the main thread.
-3. **The background thread hydrates.** It runs the same components again to build its own template-instance tree, pairs each background instance with the main-thread instance at the same position, and adopts that instance's identity. Where its dynamic values or children differ from the main-thread result, it sends only those differences back.
+3. **The background thread hydrates.** It runs the same components again to build its own template-instance tree. When a background instance and the main-thread instance at the same position use the same template, the two are paired and the background instance adopts the main-thread identity. When the templates differ, for example when the main thread rendered the `label` branch of `Content` above but the background thread renders the `panel` branch, the instances are not paired: the main-thread instance is removed and a new one is created from the background result. The background thread sends back only these differences, along with any dynamic values that differ in paired instances.
 
 The following pseudocode illustrates this process:
 
